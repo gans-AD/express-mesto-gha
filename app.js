@@ -7,9 +7,6 @@ const app = express();
 
 app.use(bodyParser.json());
 
-// Получение подключения по умолчанию
-const db = mongoose.connection;
-
 // подключаем базу данных mestodb
 mongoose.connect('mongodb://localhost:27017/mestodb');
 
@@ -27,5 +24,3 @@ app.use((req, res, next) => {
 app.listen(PORT, () => {
   console.log(`приложение запущено на порте ${PORT}`);
 });
-
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
