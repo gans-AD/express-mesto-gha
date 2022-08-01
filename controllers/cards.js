@@ -7,7 +7,7 @@ module.exports.getCards = (req, res) => {
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 
-// создание карточки
+// добавление карточки
 module.exports.createCard = (req, res) => {
   const { name, link } = req.body; // получаем из запроса объект с данными
 
@@ -17,7 +17,14 @@ module.exports.createCard = (req, res) => {
     owner: req.user._id,
   })
     .then((card) => res.status(201).send({ data: card }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send({
+          message: 'Переданы некорректные данные при создании карточки',
+        });
+      }
+      res.status(500).send({ message: 'Произошла ошибка' });
+    });
 };
 
 // удаление карточки по _id
@@ -25,7 +32,9 @@ module.exports.deleteCardById = (req, res) => {
   Card.findById(req.params.cardId)
     .then((card) => {
       if (!card) {
-        res.status(404).send({ message: 'Карточка с указанным _id не найдена' });
+        res
+          .status(404)
+          .send({ message: 'Карточка с указанным _id не найдена' });
         return;
       }
       card.remove();
