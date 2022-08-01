@@ -10,16 +10,16 @@ module.exports.getUsers = (req, res) => {
 // поиск пользователя по _id
 module.exports.userById = (req, res) => {
   User.findById(req.params.userId)
-    .then((user) => res.send({ data: user }))
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        res
-          .status(404)
-          .send({ message: 'Пользователь по указанному _id не найден' });
+    .then((user) => {
+      if (!user) {
+        res.status(404).send({ message: 'Пользователь по указанному _id не найден' });
         return;
       }
 
-      if (err.name === 'ValidationError') {
+      res.send({ data: user });
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
         res.status(400).send({
           message: 'Переданы некорректные данные пользователя',
         });
