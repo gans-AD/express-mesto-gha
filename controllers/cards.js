@@ -22,15 +22,16 @@ module.exports.createCard = (req, res) => {
 
 // удаление карточки по _id
 module.exports.deleteCardById = (req, res) => {
-  Card.findByIdAndRemove(req.params.cardId)
-    .then(() => res.send({ message: 'карточка удалена' }))
-    .catch((err) => {
-      if (err.name === 'CastError') {
+  Card.findById(req.params.cardId)
+    .then((card) => {
+      if (!card) {
         res.status(404).send({ message: 'Карточка с указанным _id не найдена' });
         return;
       }
-      res.status(500).send({ message: 'Произошла ошибка' });
-    });
+      card.remove();
+      res.send({ message: 'карточка удалена' });
+    })
+    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 
 // поставить лайк карточке
