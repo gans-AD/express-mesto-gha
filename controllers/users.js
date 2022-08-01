@@ -13,7 +13,9 @@ module.exports.userById = (req, res) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(404).send({ message: 'Пользователь по указанному _id не найден' });
+        res
+          .status(404)
+          .send({ message: 'Пользователь по указанному _id не найден' });
         return;
       }
 
@@ -27,7 +29,14 @@ module.exports.createUser = (req, res) => {
 
   User.create({ name, about, avatar })
     .then((user) => res.status(201).send({ data: user }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send({
+          message: 'Переданы некорректные данные при создании пользователя',
+        });
+      }
+      res.status(500).send({ message: 'Произошла ошибка' });
+    });
 };
 
 // редактирование профиля
@@ -40,11 +49,26 @@ module.exports.editUser = (req, res) => {
     {
       new: true, // обработчик then получит на вход обновлённую запись
       runValidators: true, // данные будут валидированы перед изменением
-      upsert: true, // если пользователь не найден, он будет создан
     },
   )
-    .then((user) => res.send({ data: user }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .then((user) => {
+      if (!user) {
+        res
+          .status(404)
+          .send({ message: 'Пользователь с указанным _id не найден' });
+        return;
+      }
+      res.send({ data: user });
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send({
+          message: 'Переданы некорректные данные при обновлении профиля',
+        });
+      }
+
+      res.status(500).send({ message: 'Произошла ошибка' });
+    });
 };
 
 // редактирование аватара
@@ -57,9 +81,24 @@ module.exports.editAvatar = (req, res) => {
     {
       new: true, // обработчик then получит на вход обновлённую запись
       runValidators: true, // данные будут валидированы перед изменением
-      upsert: true, // если пользователь не найден, он будет создан
     },
   )
-    .then((user) => res.send({ data: user }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .then((user) => {
+      if (!user) {
+        res
+          .status(404)
+          .send({ message: 'Пользователь с указанным _id не найден' });
+        return;
+      }
+      res.send({ data: user });
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send({
+          message: 'Переданы некорректные данные при обновлении аватара',
+        });
+      }
+
+      res.status(500).send({ message: 'Произошла ошибка' });
+    });
 };
