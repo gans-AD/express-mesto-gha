@@ -19,6 +19,12 @@ module.exports.userById = (req, res) => {
         return;
       }
 
+      if (err.name === 'ValidationError') {
+        res.status(400).send({
+          message: 'Переданы некорректные данные пользователя',
+        });
+      }
+
       res.status(500).send({ message: 'Произошла ошибка' });
     });
 };
