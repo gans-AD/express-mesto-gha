@@ -23,6 +23,7 @@ module.exports.userById = (req, res) => {
         res.status(400).send({
           message: 'Переданы некорректные данные пользователя',
         });
+        return;
       }
 
       res.status(500).send({ message: 'Произошла ошибка' });
@@ -40,6 +41,7 @@ module.exports.createUser = (req, res) => {
         res.status(400).send({
           message: 'Переданы некорректные данные при создании пользователя',
         });
+        return;
       }
       res.status(500).send({ message: 'Произошла ошибка' });
     });
@@ -71,6 +73,7 @@ module.exports.editUser = (req, res) => {
         res.status(400).send({
           message: 'Переданы некорректные данные при обновлении профиля',
         });
+        return;
       }
 
       res.status(500).send({ message: 'Произошла ошибка' });
@@ -103,6 +106,7 @@ module.exports.editAvatar = (req, res) => {
         res.status(400).send({
           message: 'Переданы некорректные данные при обновлении аватара',
         });
+        return;
       }
 
       res.status(500).send({ message: 'Произошла ошибка' });
