@@ -50,8 +50,24 @@ module.exports.likeCard = (req, res) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
-    .then((card) => res.send({ data: card }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .then((card) => {
+      if (!card) {
+        res
+          .status(404)
+          .send({ message: 'Передан несуществующий _id карточки' });
+        return;
+      }
+
+      res.send({ data: card });
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(400).send({
+          message: 'Переданы некорректные данные для постановки/снятии лайка',
+        });
+      }
+      res.status(500).send({ message: 'Произошла ошибка' });
+    });
 };
 
 // удалить лайк
