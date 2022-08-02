@@ -41,7 +41,15 @@ module.exports.deleteCardById = (req, res) => {
       card.remove();
       res.send({ message: 'карточка удалена' });
     })
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(400).send({
+          message: 'Переданы некорректные данные карточки',
+        });
+        return;
+      }
+      res.status(500).send({ message: 'Произошла ошибка' });
+    });
 };
 
 // поставить лайк карточке
