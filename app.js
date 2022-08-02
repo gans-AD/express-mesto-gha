@@ -5,6 +5,8 @@ const bodyParser = require('body-parser');
 const { PORT = 3000 } = process.env;
 const app = express();
 
+const NOT_FOUND_CODE = 404;
+
 app.use(bodyParser.json());
 
 // подключаем базу данных mestodb
@@ -23,7 +25,7 @@ app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 
 app.use('*', (req, res) => {
-  res.status(404).send({ message: 'несуществующий маршрут' });
+  res.status(NOT_FOUND_CODE).send({ message: 'несуществующий маршрут' });
 });
 
 app.listen(PORT, () => {
