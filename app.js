@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const { PORT = 3000 } = process.env;
 const app = express();
 
-const NOT_FOUND_CODE = 404;
+const { NOT_FOUND_CODE } = require('./utils/errors');
 
 app.use(bodyParser.json());
 

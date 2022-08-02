@@ -1,8 +1,6 @@
 const User = require('../models/user');
 
-const ERROR_CODE = 400;
-const NOT_FOUND_CODE = 404;
-const DEFAULT_ERROR_CODE = 500;
+const { ERROR_CODE, NOT_FOUND_CODE, DEFAULT_ERROR_CODE } = require('../utils/errors');
 
 // запрос всех пользователя
 module.exports.getUsers = (req, res) => {
@@ -73,6 +71,13 @@ module.exports.editUser = (req, res) => {
       res.send({ data: user });
     })
     .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(ERROR_CODE).send({
+          message: 'Переданы некорректные данные при обновлении профиля',
+        });
+        return;
+      }
+
       if (err.name === 'ValidationError') {
         res.status(ERROR_CODE).send({
           message: 'Переданы некорректные данные при обновлении профиля',
@@ -106,6 +111,13 @@ module.exports.editAvatar = (req, res) => {
       res.send({ data: user });
     })
     .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(ERROR_CODE).send({
+          message: 'Переданы некорректные данные при обновлении аватара',
+        });
+        return;
+      }
+
       if (err.name === 'ValidationError') {
         res.status(ERROR_CODE).send({
           message: 'Переданы некорректные данные при обновлении аватара',
