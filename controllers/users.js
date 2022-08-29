@@ -71,14 +71,7 @@ module.exports.editUser = (req, res) => {
       res.send({ data: user });
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(ERROR_CODE).send({
-          message: 'Переданы некорректные данные при обновлении профиля',
-        });
-        return;
-      }
-
-      if (err.name === 'ValidationError') {
+      if (err.name === 'CastError' || err.name === 'ValidationError') {
         res.status(ERROR_CODE).send({
           message: 'Переданы некорректные данные при обновлении профиля',
         });
@@ -111,14 +104,7 @@ module.exports.editAvatar = (req, res) => {
       res.send({ data: user });
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(ERROR_CODE).send({
-          message: 'Переданы некорректные данные при обновлении аватара',
-        });
-        return;
-      }
-
-      if (err.name === 'ValidationError') {
+      if (err.name === 'CastError' || err.name === 'ValidationError') {
         res.status(ERROR_CODE).send({
           message: 'Переданы некорректные данные при обновлении аватара',
         });
