@@ -62,6 +62,7 @@ module.exports.createUser = (req, res, next) => {
         );
         next(error);
       }
+
       next(err);
     });
 };
