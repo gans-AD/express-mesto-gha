@@ -1,11 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const NotFoundError = require('./utils/errors/not-found-err');
 
 const { PORT = 3000 } = process.env;
 const app = express();
-
-const { NOT_FOUND_CODE } = require('./utils/errors');
 
 app.use(bodyParser.json());
 
@@ -25,7 +24,18 @@ app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 
 app.use('*', (req, res) => {
-  res.status(NOT_FOUND_CODE).send({ message: 'несуществующий маршрут' });
+  throw new NotFoundError('несуществующий маршрут');
+});
+
+// централизованная обработка ошибок
+app.use((err, req, res, next) => {
+  const { statusCode = 500, message } = err;
+
+  res
+    .status(statusCode)
+    .send({
+      message: statusCode === 500 ? 'На сервере произошла ошибка' : message,
+    });
 });
 
 app.listen(PORT, () => {

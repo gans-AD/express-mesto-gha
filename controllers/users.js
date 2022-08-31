@@ -1,51 +1,67 @@
 const User = require('../models/user');
 
-const { ERROR_CODE, NOT_FOUND_CODE, DEFAULT_ERROR_CODE } = require('../utils/errors');
+const {
+  ERROR_CODE,
+  NOT_FOUND_CODE,
+  DEFAULT_ERROR_CODE,
+} = require('../utils/errors');
+const BadRequestError = require('../utils/errors/bad-req-err');
+const NotFoundError = require('../utils/errors/not-found-err');
+
+// аутентификация
+module.exports.login = (req, res) => {
+  const { email, password } = req.body;
+
+  User.findOne({ email }).then((user) => {
+    if (!user) {
+      // пользователь с такой почтой не найден
+    }
+
+    // пользователь найден
+  });
+};
 
 // запрос всех пользователя
-module.exports.getUsers = (req, res) => {
+module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send({ data: users }))
-    .catch(() => res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка' }));
+    .catch(next);
 };
 
 // поиск пользователя по _id
-module.exports.userById = (req, res) => {
+module.exports.userById = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
-        res.status(NOT_FOUND_CODE).send({ message: 'Пользователь по указанному _id не найден' });
-        return;
+        throw new NotFoundError('Пользователь по указанному _id не найден');
       }
 
       res.send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(ERROR_CODE).send({
-          message: 'Переданы некорректные данные пользователя',
-        });
-        return;
+        const error = new BadRequestError(
+          'Переданы некорректные данные пользователя',
+        );
+        next(error);
       }
-
-      res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка' });
+      next(err);
     });
 };
 
 // создание пользователя
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const { name, about, avatar } = req.body; // получаем из запроса объект с данными
 
   User.create({ name, about, avatar })
     .then((user) => res.status(201).send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(ERROR_CODE).send({
-          message: 'Переданы некорректные данные при создании пользователя',
-        });
-        return;
+        const error = BadRequestError(
+          'Переданы некорректные данные при создании пользователя',
+        );
+        next(error);
       }
-      res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка' });
     });
 };
 
