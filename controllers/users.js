@@ -1,10 +1,5 @@
 const User = require('../models/user');
 
-const {
-  ERROR_CODE,
-  NOT_FOUND_CODE,
-  DEFAULT_ERROR_CODE,
-} = require('../utils/errors');
 const BadRequestError = require('../utils/errors/bad-req-err');
 const NotFoundError = require('../utils/errors/not-found-err');
 
@@ -45,6 +40,7 @@ module.exports.userById = (req, res, next) => {
         );
         next(error);
       }
+
       next(err);
     });
 };
@@ -68,7 +64,7 @@ module.exports.createUser = (req, res, next) => {
 };
 
 // редактирование профиля
-module.exports.editUser = (req, res) => {
+module.exports.editUser = (req, res, next) => {
   const { name, about } = req.body;
 
   User.findByIdAndUpdate(
@@ -81,27 +77,25 @@ module.exports.editUser = (req, res) => {
   )
     .then((user) => {
       if (!user) {
-        res
-          .status(NOT_FOUND_CODE)
-          .send({ message: 'Пользователь с указанным _id не найден' });
-        return;
+        throw new NotFoundError('Пользователь с указанным _id не найден');
       }
+
       res.send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
-        res.status(ERROR_CODE).send({
-          message: 'Переданы некорректные данные при обновлении профиля',
-        });
-        return;
+        const error = new BadRequestError(
+          'Переданы некорректные данные при обновлении профиля',
+        );
+        next(error);
       }
 
-      res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка' });
+      next(err);
     });
 };
 
 // редактирование аватара
-module.exports.editAvatar = (req, res) => {
+module.exports.editAvatar = (req, res, next) => {
   const { avatar } = req.body;
 
   User.findByIdAndUpdate(
@@ -114,21 +108,18 @@ module.exports.editAvatar = (req, res) => {
   )
     .then((user) => {
       if (!user) {
-        res
-          .status(NOT_FOUND_CODE)
-          .send({ message: 'Пользователь с указанным _id не найден' });
-        return;
+        throw new NotFoundError('Пользователь с указанным _id не найден');
       }
       res.send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
-        res.status(ERROR_CODE).send({
-          message: 'Переданы некорректные данные при обновлении аватара',
-        });
-        return;
+        const error = new BadRequestError(
+          'Переданы некорректные данные при обновлении аватара',
+        );
+        next(error);
       }
 
-      res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка' });
+      next(err);
     });
 };
