@@ -21,8 +21,10 @@
   },
   "homepage": "https://github.com/gans-AD/express-mesto-gha#readme",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "body-parser": "^1.20.0",
     "express": "^4.18.1",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.5.0",
     "validator": "^13.7.0"
   },

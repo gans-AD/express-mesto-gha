@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const NotFoundError = require('./utils/errors/not-found-err');
+const { login, createUser } = require('./controllers/users');
+const auth = require('./middlewares/auth');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -11,17 +13,16 @@ app.use(bodyParser.json());
 // подключаем базу данных mestodb
 mongoose.connect('mongodb://localhost:27017/mestodb');
 
-// временная подстановка id пользователя
-app.use((req, res, next) => {
-  req.user = {
-    _id: '62e361c8a3f7a3e01b19370e',
-  };
+// роуты, доступные без авторизации
+app.post('/signin', login);
+app.post('signup', createUser);
 
-  next();
-});
+// мидлвэр авторизации
+app.use(auth);
 
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
+
 
 app.use('*', (req, res) => {
   throw new NotFoundError('несуществующий маршрут');

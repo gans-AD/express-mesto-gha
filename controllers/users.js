@@ -1,19 +1,57 @@
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 const BadRequestError = require('../utils/errors/bad-req-err');
 const NotFoundError = require('../utils/errors/not-found-err');
 
+// создание пользователя
+module.exports.createUser = (req, res, next) => {
+  const {
+    name, about, avatar, email, password,
+  } = req.body; // получаем из запроса объект с данными
+
+  User.create({
+    name,
+    about,
+    avatar,
+    email,
+    password,
+  })
+    .then((user) => res.status(201).send({ data: user }))
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        const error = new BadRequestError(
+          'Переданы некорректные данные при создании пользователя',
+        );
+        next(error);
+      }
+
+      next(err);
+    });
+};
+
 // аутентификация
 module.exports.login = (req, res) => {
   const { email, password } = req.body;
 
-  User.findOne({ email }).then((user) => {
-    if (!user) {
-      // пользователь с такой почтой не найден
-    }
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      // успешная аутентификация
+      // создаем токен
+      const token = jwt.sign({ _id: user._id }, 'some-secret-key', {
+        expiresIn: '7d',
+      });
 
-    // пользователь найден
-  });
+      // отправляем токен в куки
+      res
+        .cookie('jwt', token, {
+          maxAge: 3600000 * 24 * 7,
+          httpOnly: true,
+          sameSite: true,
+        })
+        .end();
+    })
+    .catch(next);
 };
 
 // запрос всех пользователя
@@ -40,25 +78,6 @@ module.exports.userById = (req, res, next) => {
         );
         next(error);
       }
-
-      next(err);
-    });
-};
-
-// создание пользователя
-module.exports.createUser = (req, res, next) => {
-  const { name, about, avatar } = req.body; // получаем из запроса объект с данными
-
-  User.create({ name, about, avatar })
-    .then((user) => res.status(201).send({ data: user }))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        const error = new BadRequestError(
-          'Переданы некорректные данные при создании пользователя',
-        );
-        next(error);
-      }
-
       next(err);
     });
 };
