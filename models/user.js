@@ -21,7 +21,9 @@ const userSchema = new mongoose.Schema({
       'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
   },
   email: { type: String, required: true, unique: true },
-  password: { type: String, required: true, minlength: 8 },
+  password: {
+    type: String, required: true, minlength: 8, select: false,
+  },
 });
 
 // проверяем наличие пользователя с указанными почтой и паролем
