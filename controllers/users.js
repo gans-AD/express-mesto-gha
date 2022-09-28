@@ -11,6 +11,8 @@ module.exports.createUser = (req, res, next) => {
     name, about, avatar, email, password,
   } = req.body; // получаем из запроса объект с данными
 
+  // создаем хеш пароля
+  // и записываем пользователя в базу, вместо пароля сохраняем его хеш
   bcrypt
     .hash(password, 10)
     .then((hash) => User.create({
@@ -20,7 +22,17 @@ module.exports.createUser = (req, res, next) => {
       email,
       password: hash,
     }))
-    .then((user) => res.status(201).send({ data: user }))
+    .then((user) => {
+      res.status(201).send({
+        data: {
+          id: user._id,
+          email: user.email,
+          name: user.name,
+          about: user.about,
+          avatar: user.avatar,
+        },
+      });
+    })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         const error = new BadRequestError(
