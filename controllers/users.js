@@ -14,6 +14,7 @@ module.exports.createUser = (req, res, next) => {
 
   // создаем хеш пароля
   // и записываем пользователя в базу, вместо пароля сохраняем его хеш
+
   bcrypt
     .hash(password, 10)
     .then((hash) => User.create({
@@ -43,10 +44,7 @@ module.exports.createUser = (req, res, next) => {
       }
 
       if (err.code === 11000) {
-        const error = new DuplicateError(
-          'Пользователь с таким Email уже существует',
-        );
-        next(error);
+        next(new DuplicateError('Пользователь с таким Email уже существует'));
       }
 
       next(err);
