@@ -4,6 +4,7 @@ const User = require('../models/user');
 
 const BadRequestError = require('../utils/errors/bad-req-err');
 const NotFoundError = require('../utils/errors/not-found-err');
+const DuplicateError = require('../utils/errors/duplicate-err');
 
 // создание пользователя
 module.exports.createUser = (req, res, next) => {
@@ -37,6 +38,13 @@ module.exports.createUser = (req, res, next) => {
       if (err.name === 'ValidationError') {
         const error = new BadRequestError(
           'Переданы некорректные данные при создании пользователя',
+        );
+        next(error);
+      }
+
+      if (err.code === 11000) {
+        const error = new DuplicateError(
+          'Пользователь с таким Email уже существует',
         );
         next(error);
       }
