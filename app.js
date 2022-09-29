@@ -53,7 +53,7 @@ app.use(
   celebrate({
     body: Joi.object().keys({
       name: Joi.string().min(2).max(30),
-      link: oi
+      link: Joi
         .string()
         .pattern(
           /^(https?:\/\/)?(w{3}\.)?([a-z0-9.-]+)\.([a-z.]{2,6})([a-zA-Z0-9-._~:/?#[]@!$&'()*\+,;=]*)*#?/,
