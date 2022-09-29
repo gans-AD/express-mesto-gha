@@ -23,6 +23,7 @@ app.post('/signin', celebrate({
       password: Joi.string().required().min(8),
     }),
   }), login);
+
 app.post(
   '/signup',
   celebrate({
@@ -38,8 +39,6 @@ app.post(
   }),
   createUser,
 );
-
-app.post('/signin', login);
 
 // мидлвэр авторизации
 app.use(auth);
