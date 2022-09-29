@@ -14,7 +14,9 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 // подключаем базу данных mestodb
-mongoose.connect('mongodb://localhost:27017/mestodb');
+mongoose.connect('mongodb://localhost:27017/mestodb'{
+  useNewUrlParser: true,
+});
 
 // роуты, доступные без авторизации
 app.post('/signin', celebrate({
