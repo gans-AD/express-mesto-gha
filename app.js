@@ -48,7 +48,7 @@ app.use('/users', require('./routes/users'));
 app.use('/cards', celebrate({
   // валидируем параметры
   params: Joi.object().keys({
-    cardId: Joi.objectId(),
+    cardId: Joi.string(),
   }).unknown(true),
 }), require('./routes/cards'));
 
