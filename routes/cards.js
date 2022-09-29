@@ -14,8 +14,19 @@ const validationId = () => celebrate({
   }),
 });
 
-router.get('/', getCards);
-router.post('/', createCard);
+const validationCard = () => celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30).required(),
+    link: Joi.string()
+      .pattern(
+        /^(https?:\/\/)?(w{3}\.)?([a-z0-9.-]+)\.([a-z.]{2,6})([a-zA-Z0-9-._~:/?#[]@!$&'()*\+,;=]*)*#?/,
+      )
+      .required(),
+  }),
+});
+
+router.get('/', validationCard, getCards);
+router.post('/', validationCard, createCard);
 router.delete('/:cardId', validationId, deleteCardById);
 router.put('/:cardId/likes', validationId, likeCard);
 router.delete('/:cardId/likes', validationId, dislikeCard);
