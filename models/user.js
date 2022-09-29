@@ -22,23 +22,28 @@ const userSchema = new mongoose.Schema({
   },
   email: { type: String, required: true, unique: true },
   password: {
-    type: String, required: true, minlength: 8, select: false,
+    type: String,
+    required: true,
+    minlength: 8,
+    select: false,
   },
 });
 
 // проверяем наличие пользователя с указанными почтой и паролем
 userSchema.statics.findUserByCredentials = function (email, password) {
-  return this.findOne({ email }).select('+password').then((user) => {
-    if (!user) {
-      throw new AuthentificationError('Неправильные почта или пароль');
-    }
-    return bcrypt.compare(password, user.password).then((matched) => {
-      if (!matched) {
-        throw new AuthentificationError('Неправильные почта или пароль2');
-      } 
-      return user;
+  return this.findOne({ email })
+    .select('+password')
+    .then((user) => {
+      if (!user) {
+        throw new AuthentificationError('Неправильные почта или пароль');
+      }
+      return bcrypt.compare(password, user.password).then((matched) => {
+        if (!matched) {
+          throw new AuthentificationError('Неправильные почта или пароль2');
+        }
+        return user;
+      });
     });
-  });
 };
 
 // создаём модель и экспортируем её
