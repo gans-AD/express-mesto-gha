@@ -39,9 +39,6 @@ app.post(
   createUser,
 );
 
-// мидлвэр обработки ошибок Celebrate
-app.use(errors());
-
 // мидлвэр авторизации
 app.use(auth);
 
@@ -61,6 +58,9 @@ app.use((err, req, res, next) => {
   });
   next();
 });
+
+// мидлвэр обработки ошибок Celebrate
+app.use(errors());
 
 app.listen(PORT, () => {
   console.log(`приложение запущено на порте ${PORT}`);
