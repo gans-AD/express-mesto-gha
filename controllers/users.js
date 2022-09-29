@@ -37,10 +37,11 @@ module.exports.createUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        const error = new BadRequestError(
-          'Переданы некорректные данные при создании пользователя',
+        next(
+          new BadRequestError(
+            'Переданы некорректные данные при создании пользователя',
+          ),
         );
-        next(error);
       }
 
       if (err.code === 11000) {
