@@ -39,8 +39,11 @@ app.post(
   createUser,
 );
 
+app.post('/signin', login);
+
 // мидлвэр авторизации
 app.use(auth);
+
 
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
