@@ -51,6 +51,9 @@ app.use('*', () => {
   throw new NotFoundError('несуществующий маршрут');
 });
 
+// мидлвэр обработки ошибок Celebrate
+app.use(errors());
+
 // централизованная обработка ошибок
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
@@ -61,8 +64,7 @@ app.use((err, req, res, next) => {
   next();
 });
 
-// мидлвэр обработки ошибок Celebrate
-app.use(errors());
+
 
 app.listen(PORT, () => {
   console.log(`приложение запущено на порте ${PORT}`);
