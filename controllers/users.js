@@ -72,9 +72,7 @@ module.exports.login = (req, res, next) => {
           httpOnly: true,        
         }).send({data: user});
     })
-    .catch(() => {
-      next(new AuthentificationError('Необходима авторизация'));
-  });
+    .catch(next);
 };
 
 // запрос всех пользователя
