@@ -5,6 +5,7 @@ const User = require('../models/user');
 const BadRequestError = require('../utils/errors/bad-req-err');
 const NotFoundError = require('../utils/errors/not-found-err');
 const DuplicateError = require('../utils/errors/duplicate-err');
+const AuthentificationError = require('../utils/errors/auth-err');
 
 // создание пользователя
 module.exports.createUser = (req, res, next) => {
@@ -69,10 +70,12 @@ module.exports.login = (req, res, next) => {
         .cookie('jwt', token, {
           maxAge: 3600000 * 24 * 7,
           httpOnly: true,        
-        });
-        res.send({message: 'Авторизация выполнена успешно!'});
+        })
+        .send({data: user});
     })
-    .catch(next);
+    .catch(() => {
+    next(new AuthentificationError('Необходима авторизация'));
+  });
 };
 
 // запрос всех пользователя
