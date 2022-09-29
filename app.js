@@ -47,22 +47,7 @@ app.post(
 // мидлвэр авторизации
 app.use(auth);
 
-app.use(
-  '/users',
-  celebrate({
-    body: Joi.object().keys({
-      name: Joi.string().min(2).max(30).required(),
-      about: Joi.string().min(2).max(30).required(),
-      email: Joi.string().required().email(),
-      link: Joi.string()
-        .pattern(
-          /^(https?:\/\/)?(w{3}\.)?([a-z0-9.-]+)\.([a-z.]{2,6})([a-zA-Z0-9-._~:/?#[]@!$&'()*\+,;=]*)*#?/,
-        )
-        .required(),
-    }),
-  }),
-  require('./routes/users'),
-);
+app.use('/users', require('./routes/users'));
 
 app.use('/cards', require('./routes/cards'));
 
