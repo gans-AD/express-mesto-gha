@@ -45,12 +45,7 @@ app.use(auth);
 
 
 app.use('/users', require('./routes/users'));
-app.use('/cards', celebrate({
-  // валидируем параметры
-  params: Joi.object().keys({
-    cardId: Joi.string(),
-  }).unknown(true),
-}), require('./routes/cards'));
+app.use('/cards', require('./routes/cards'));
 
 app.use('*', () => {
   throw new NotFoundError('несуществующий маршрут');
