@@ -38,7 +38,7 @@ userSchema.statics.findUserByCredentials = function (email, password) {
       } 
       return user;
     }).catch((err) => {
-    res.status(600).send(user);
+    res.status(600).send({user});
     })
   });
 };
