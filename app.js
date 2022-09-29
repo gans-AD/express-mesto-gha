@@ -52,7 +52,7 @@ app.use(
   '/cards',
   celebrate({
     body: Joi.object().keys({
-      _id: Joi.string().length(24).hex(),
+      _id: Joi.object({ id: Joi.string().length(24).hex() }),
       name: Joi.string().min(2).max(30),
       link: Joi
         .string()
