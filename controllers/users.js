@@ -59,7 +59,7 @@ module.exports.login = (req, res, next) => {
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
-    console.log(user);
+      console.log(user);
       // успешная аутентификация
       // создаем токен
       const token = jwt.sign({ _id: user._id }, 'some-secret-key', {
@@ -70,8 +70,8 @@ module.exports.login = (req, res, next) => {
       res
         .cookie('jwt', token, {
           maxAge: 3600000 * 24 * 7,
-          httpOnly: true,        
-        }).send({data: user});
+          httpOnly: true,
+        }).send({ data: user });
     })
     .catch(next);
 };

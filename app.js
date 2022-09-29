@@ -17,12 +17,16 @@ app.use(cookieParser());
 mongoose.connect('mongodb://localhost:27017/mestodb');
 
 // роуты, доступные без авторизации
-app.post('/signin', celebrate({
+app.post(
+  '/signin',
+  celebrate({
     body: Joi.object().keys({
       email: Joi.string().required().email(),
       password: Joi.string().required().min(8),
     }),
-  }), login);
+  }),
+  login,
+);
 
 app.post(
   '/signup',
@@ -43,17 +47,21 @@ app.post(
 // мидлвэр авторизации
 app.use(auth);
 
-
 app.use('/users', require('./routes/users'));
-app.use('/cards',
-celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    link: oi.string().pattern(
-      /^(https?:\/\/)?(w{3}\.)?([a-z0-9.-]+)\.([a-z.]{2,6})([a-zA-Z0-9-._~:/?#[]@!$&'()*\+,;=]*)*#?/,
-    ),
+app.use(
+  '/cards',
+  celebrate({
+    body: Joi.object().keys({
+      name: Joi.string().min(2).max(30),
+      link: oi
+        .string()
+        .pattern(
+          /^(https?:\/\/)?(w{3}\.)?([a-z0-9.-]+)\.([a-z.]{2,6})([a-zA-Z0-9-._~:/?#[]@!$&'()*\+,;=]*)*#?/,
+        ),
+    }),
   }),
-}), require('./routes/cards'));
+  require('./routes/cards'),
+);
 
 app.use('*', () => {
   throw new NotFoundError('несуществующий маршрут');
@@ -71,8 +79,6 @@ app.use((err, req, res, next) => {
   });
   next();
 });
-
-
 
 app.listen(PORT, () => {
   console.log(`приложение запущено на порте ${PORT}`);
