@@ -28,7 +28,7 @@ const userSchema = new mongoose.Schema({
 
 // проверяем наличие пользователя с указанными почтой и паролем
 userSchema.statics.findUserByCredentials = function (email, password) {
-  return this.findOne({ email }).then((user) => {
+  return this.findOne({ email }).select('+password').then((user) => {
     if (!user) {
       throw new AuthentificationError('Неправильные почта или пароль');
     }
@@ -37,9 +37,7 @@ userSchema.statics.findUserByCredentials = function (email, password) {
         throw new AuthentificationError('Неправильные почта или пароль2');
       } 
       return user;
-    }).catch((err) => {
-    res.status(600).send({user});
-    })
+    });
   });
 };
 
