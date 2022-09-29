@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const AuthentificationError = require('../utils/errors/auth-err');
+const cookieParser = require('cookie-parser');
 
 module.exports = (req, res, next) => {
   // извлекаем токен
