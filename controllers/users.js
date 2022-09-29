@@ -27,7 +27,7 @@ module.exports.createUser = (req, res, next) => {
     .then((user) => {
       res.status(201).send({
         data: {
-          id: user._id,
+          _id: user._id,
           email: user.email,
           name: user.name,
           about: user.about,
@@ -68,10 +68,9 @@ module.exports.login = (req, res, next) => {
       res
         .cookie('jwt', token, {
           maxAge: 3600000 * 24 * 7,
-          httpOnly: true,
-        
-        })
-        .send({message: 'Авторизация выполнена успешно!'});
+          httpOnly: true,        
+        });
+        res.send({message: 'Авторизация выполнена успешно!'});
     })
     .catch(next);
 };
