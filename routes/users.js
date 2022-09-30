@@ -33,7 +33,7 @@ router.patch(
   '/me/avatar',
   celebrate({
     body: Joi.object().keys({
-      link: Joi.string()
+      avatar: Joi.string()
         .pattern(
           /^(https?:\/\/)?(w{3}\.)?([a-z0-9.-]+)\.([a-z.]{2,6})([a-zA-Z0-9-._~:/?#[]@!$&'()*\+,;=]*)*#?/,
         )
