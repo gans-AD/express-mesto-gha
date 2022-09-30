@@ -100,11 +100,13 @@ module.exports.dislikeCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        const error = new BadRequestError(
-          'Переданы некорректные данные для постановки/снятии лайка',
+        next(
+          new BadRequestError(
+            'Переданы некорректные данные для постановки/снятии лайка',
+          ),
         );
-        next(error);
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
