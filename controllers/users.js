@@ -42,13 +42,11 @@ module.exports.createUser = (req, res, next) => {
             'Переданы некорректные данные при создании пользователя',
           ),
         );
-      }
-
-      if (err.code === 11000) {
+      } else if (err.code === 11000) {
         next(new DuplicateError('Пользователь с таким Email уже существует'));
+      } else {
+        next(err);
       }
-
-      next(err);
     });
 };
 
@@ -69,7 +67,8 @@ module.exports.login = (req, res, next) => {
         .cookie('jwt', token, {
           maxAge: 3600000 * 24 * 7,
           httpOnly: true,
-        }).send({ data: user });
+        })
+        .send({ data: user });
     })
     .catch(next);
 };
@@ -93,12 +92,10 @@ module.exports.userById = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        const error = new BadRequestError(
-          'Переданы некорректные данные пользователя',
-        );
-        next(error);
+        next(new BadRequestError('Переданы некорректные данные пользователя'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -114,12 +111,10 @@ module.exports.getCurrentUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        const error = new BadRequestError(
-          'Переданы некорректные данные пользователя',
-        );
-        next(error);
+        next(new BadRequestError('Переданы некорректные данные пользователя'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -144,13 +139,14 @@ module.exports.editUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
-        const error = new BadRequestError(
-          'Переданы некорректные данные при обновлении профиля',
+        next(
+          new BadRequestError(
+            'Переданы некорректные данные при обновлении профиля',
+          ),
         );
-        next(error);
+      } else {
+        next(err);
       }
-
-      next(err);
     });
 };
 
@@ -174,12 +170,13 @@ module.exports.editAvatar = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
-        const error = new BadRequestError(
-          'Переданы некорректные данные при обновлении аватара',
+        next(
+          new BadRequestError(
+            'Переданы некорректные данные при обновлении аватара',
+          ),
         );
-        next(error);
+      } else {
+        next(err);
       }
-
-      next(err);
     });
 };
