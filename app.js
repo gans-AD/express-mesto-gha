@@ -6,6 +6,7 @@ const { celebrate, Joi, errors } = require('celebrate');
 const NotFoundError = require('./utils/errors/not-found-err');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
+const { errorHandler } = require('./middlewares/errorHandler');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -59,14 +60,7 @@ app.use('*', () => {
 app.use(errors());
 
 // централизованная обработка ошибок
-app.use((err, req, res, next) => {
-  const { statusCode = 500, message } = err;
-
-  res.status(statusCode).send({
-    message: statusCode === 500 ? 'На сервере произошла ошибка' : message,
-  });
-  next();
-});
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`приложение запущено на порте ${PORT}`);
