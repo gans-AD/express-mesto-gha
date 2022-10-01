@@ -46,7 +46,10 @@ module.exports.deleteCardById = (req, res, next) => {
         throw new ForbiddenError('Нельзя удалять чужую карточку');
       }
 
-      card.remove().then(res.send({ message: 'карточка удалена' }));
+      card
+        .remove()
+        .then(res.send({ message: 'карточка удалена' }))
+        .catch(next);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
