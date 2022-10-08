@@ -7,6 +7,7 @@ const NotFoundError = require('./utils/errors/not-found-err');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const { errorHandler } = require('./middlewares/errorHandler');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -16,6 +17,9 @@ app.use(cookieParser());
 
 // подключаем базу данных mestodb
 mongoose.connect('mongodb://localhost:27017/mestodb');
+
+// подключаем логгер запросов
+app.use(requestLogger);
 
 // роуты, доступные без авторизации
 app.post(
@@ -51,6 +55,9 @@ app.use(auth);
 app.use('/users', require('./routes/users'));
 
 app.use('/cards', require('./routes/cards'));
+
+// подключаем логгер ошибок
+app.use(errorLogger);
 
 app.use('*', () => {
   throw new NotFoundError('несуществующий маршрут');
