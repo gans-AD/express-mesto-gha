@@ -1,5 +1,4 @@
 const winston = require('winston');
-// eslint-disable-next-line import/no-unresolved
 const expressWinston = require('express-winston');
 
 // логгер запросов
